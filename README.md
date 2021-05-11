@@ -1,5 +1,14 @@
 # Description
-If Tilt is running as `tilt ci`, periodically logs what ci is waiting on before completing.
+If Tilt is running as `tilt ci`, periodically logs what ci is waiting on before completing, e.g.:
+```
+report_tilt_… │ ⌛ tilt ci is waiting on:
+report_tilt_… │   doggos:runtime: waiting-for-pod
+report_tilt_… │   doggos:update: executing
+report_tilt_… │   emoji:runtime: waiting-for-pod
+report_tilt_… │   emoji:update: unknown
+report_tilt_… │   fe:runtime: waiting-for-pod
+report_tilt_… │   fe:update: executing
+```
 
 # Usage:
 1. Clone the repo to somewhere on your drive.
