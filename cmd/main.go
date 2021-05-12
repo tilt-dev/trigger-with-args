@@ -16,8 +16,6 @@ func parseArgs() (resource string, args []string, err error) {
 	return os.Args[1], os.Args[2:], nil
 }
 func run() error {
-	// flag.Parse()
-
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 

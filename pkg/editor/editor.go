@@ -84,12 +84,7 @@ func (ce *CmdEditor) NewCmdWithArgs(cmd v1alpha1.Cmd, args []string) (*v1alpha1.
 	}
 
 	// Keep the first arg and chop off+replace all the rest. There's probably a
-	// smarter way to do this--maybe indicating via annotation how many args to chop off?
-	// If we're okay with the first run of the Cmd failing, maybe the Cmd should be
-	// specified as just the base command+args, and the first time we run this script
-	// against it, we append our args to the end, and store the number of added
-	// args in an annotation; if we modify that same Cmd again, we chop off only
-	// args we added via script (as noted in annotation).
+	// smarter way to do this (see README for thoughts).
 	newArgs := append(curArgs[:1], args...)
 
 	cp := cmd.DeepCopy()
