@@ -1,5 +1,5 @@
-# Description
-A CLI leveraging the Tilt API to trigger a given Local Resource--with args specified by the user.
+# cmd-with-args
+A hackweek proof-of-concept for triggering a local resource with user-provided args.
 
 ## Why?
 We know that Tilt users dig having a menu of common operations (in the form of trigger-able Local Resources) at their fingertips in the Web UI. One comment we've heard is "it'd be great to be able to call these with arbitrary args"--e.g. maybe there's a `seed-db.sh` script that targets a different database depending on the arg passed.
