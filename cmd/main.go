@@ -4,13 +4,8 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"strings"
 
-	"github.com/pkg/errors"
-	clientset "github.com/tilt-dev/tilt-ci-status/pkg/clientset/versioned"
-	"github.com/tilt-dev/tilt-ci-status/pkg/config"
-	"github.com/tilt-dev/tilt/pkg/apis/core/v1alpha1"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"github.com/tilt-dev/tilt-ci-status/pkg/editor"
 )
 
 func parseArgs() (resource string, args []string, err error) {
@@ -31,52 +26,12 @@ func run() error {
 		return err
 	}
 
-	cmd, err := cmdForResource(ctx, resource)
+	ce, err := editor.NewCmdEditor()
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("For resource %s, found command:\n", resource)
-	fmt.Printf("\t%s\n", strings.Join(cmd.Spec.Args, " "))
-	fmt.Printf("will call with args: %s\n", strings.Join(newArgs, " "))
-	return nil
-}
-
-func cmdForResource(ctx context.Context, resource string) (v1alpha1.Cmd, error) {
-	cmds, err := allCmdsByResource(ctx)
-	if err != nil {
-		return v1alpha1.Cmd{}, errors.Wrap(err, "getting all Cmds")
-	}
-	cmd, ok := cmds[resource]
-	if !ok {
-		var allResources []string
-		for resource := range cmds {
-			allResources = append(allResources, resource)
-		}
-		return v1alpha1.Cmd{}, fmt.Errorf("no Cmd found for resource %q (found Cmds for the following resources: %s)",
-			resource, strings.Join(allResources, ", "))
-	}
-	return cmd, nil
-}
-func allCmdsByResource(ctx context.Context) (map[string]v1alpha1.Cmd, error) {
-	// TODO - how do we handle multiple tilt instances?
-	cfg, err := config.NewConfig()
-	if err != nil {
-		return nil, errors.Wrap(err, "getting tilt api config")
-	}
-
-	cli := clientset.NewForConfigOrDie(cfg)
-
-	cmds, err := cli.TiltV1alpha1().Cmds().List(ctx, v1.ListOptions{})
-	if err != nil {
-		return nil, errors.Wrap(err, "error watching tilt sessions")
-	}
-
-	ret := make(map[string]v1alpha1.Cmd, len(cmds.Items))
-	for _, cmd := range cmds.Items {
-		ret[cmd.ObjectMeta.Annotations[v1alpha1.AnnotationManifest]] = cmd
-	}
-	return ret, nil
+	return ce.CallCmdForResourceWithArgs(ctx, resource, newArgs)
 }
 
 func main() {
