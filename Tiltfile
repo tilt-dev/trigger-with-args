@@ -1,3 +1,6 @@
-def report_tilt_ci_status(log_interval="10s"):
-  if config.tilt_subcommand == 'ci':
-    local_resource('report_tilt_ci_status', serve_cmd='cd "%s" && go run ./cmd/tilt-ci-status --resourcename report_tilt_ci_status --loginterval "%s"' % (os.path.dirname(__file__), log_interval))
+# use the new cli to change the args passed to this Cmd! Try:
+#   go run cmd/main.go change-me ✨
+local_resource('change-me', serve_cmd=['./my-script.sh', '🤖'])
+
+# the new cli can't operate on this Cmd b/c it's wrapped as bash rather than passed as argv!
+local_resource('string-cmd', serve_cmd='./my-script.sh 🤐')
